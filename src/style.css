@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden; /* Görünmeyen taşmaları gizlemek için */
+  background: #f0f0f0;
+}
+
+/* Default sizes */
+.box {
+  position: absolute;
+  bottom: 0;
+  height: 30px;
+  background: #0d5477;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 5px;
+}
+
+.game-over {
+  position: fixed; /* Tam ekranın ortasında yerleştirmek için fixed kullan */
+  top: 50%; /* Dikey olarak ortala */
+  left: 50%; /* Yatay olarak ortala */
+  transform: translate(-50%, -50%); /* Gerçekten ortalanmasını sağla */
+  width: 100vw; /* Genişliği tam ekran */
+  height: 100vh; /* Yüksekliği tam ekran */
+  background: rgba(255, 0, 0, 0.8); /* Yarı saydam arka plan */
+  color: white;
+  display: flex;
+  flex-direction: column; /* Alt alta dizmek için */
+  align-items: center;
+  justify-content: center;
+  font-size: 48px; /* Font boyutunu büyüt */
+  font-weight: bold;
+  visibility: hidden; /* Varsayılan olarak gizli */
+  z-index: 1000; /* Diğer içeriklerin üstünde görünmesini sağla */
+}
+
+.game-over.visible {
+  visibility: visible; /* Görünür hale getir */
+}
+
+.game-over h2 {
+  margin: 0; /* Varsayılan üst ve alt boşlukları kaldır */
+}
+
+.restart-button {
+  margin-top: 20px; /* Buton ile yazı arasında mesafe */
+  padding: 12px 25px; /* Butonun iç boşluğu */
+  font-size: xx-large; /* Font boyutu */
+  color: white; /* Yazı rengi */
+  background-color: black; /* Arka plan rengi */
+  border: none; /* Kenarlık yok */
+  border-radius: 5px; /* Kenarları yuvarla */
+  cursor: pointer; /* Üzerine gelince imleci değiştir */
+}
+
+.restart-button:hover {
+  background-color: white; /* Turuncu arka plan */
+  color: black; /* Beyaz yazı rengi */
+}
+
+
+.score {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.max-score {
+  position: absolute;
+  right: 30px;
+  left: 30px;
+  top: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.modal-score {
+  font-size: xx-large;
+  font-weight: 600;
+  color: white;
+}
