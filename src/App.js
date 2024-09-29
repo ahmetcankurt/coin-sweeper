@@ -282,35 +282,60 @@ function Game() {
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (gameOver || !gameStarted) return; // Oyun başlamadıysa hareket etmeye izin verme
-
+  
       const containerWidth = containerRef.current.clientWidth;
       const margin = 20;
       const maxX = containerWidth - boxSizeWidth - margin;
+      
+      // Mouse hareketi için X koordinatını hesaplama
       const newBoxX =
-        e.clientX -
-        containerRef.current.getBoundingClientRect().left -
-        boxSizeWidth / 2;
-
+        e.clientX - containerRef.current.getBoundingClientRect().left - boxSizeWidth / 2;
+  
       setBoxX(Math.max(margin, Math.min(maxX, newBoxX)));
-
+  
       if (colliderRef.current) {
         Matter.Body.setPosition(colliderRef.current, {
           x: boxX + boxSizeWidth / 2,
           y: containerRef.current.clientHeight - boxBottom,
         });
       }
-
+  
       if (cursorRef.current) {
         cursorRef.current.style.left = `${e.clientX}px`;
         cursorRef.current.style.top = `${e.clientY}px`;
       }
     };
-
   
-
+    const handleTouchMove = (e) => {
+      if (gameOver || !gameStarted) return;
+  
+      // Mobil cihazlarda ilk parmağın konumunu alıyoruz
+      const touch = e.touches[0];
+      const containerWidth = containerRef.current.clientWidth;
+      const margin = 20;
+      const maxX = containerWidth - boxSizeWidth - margin;
+  
+      const newBoxX =
+        touch.clientX - containerRef.current.getBoundingClientRect().left - boxSizeWidth / 2;
+  
+      setBoxX(Math.max(margin, Math.min(maxX, newBoxX)));
+  
+      if (colliderRef.current) {
+        Matter.Body.setPosition(colliderRef.current, {
+          x: boxX + boxSizeWidth / 2,
+          y: containerRef.current.clientHeight - boxBottom,
+        });
+      }
+    };
+  
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove); // Mobil dokunma hareketini ekleyin
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove); // Mobil dokunma hareketini kaldırın
+    };
   }, [boxX, gameOver, gameStarted]);
+  
 
   const handleStartGame = () => {
     setGameStarted(true);
