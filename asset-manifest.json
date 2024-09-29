@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/coin-sweeper/static/css/main.fa78995b.css",
+    "main.js": "/coin-sweeper/static/js/main.a9b0259e.js",
+    "static/js/453.9966abe1.chunk.js": "/coin-sweeper/static/js/453.9966abe1.chunk.js",
+    "static/media/coin.mp3": "/coin-sweeper/static/media/coin.5a742b36cd7d42671056.mp3",
+    "index.html": "/coin-sweeper/index.html",
+    "main.fa78995b.css.map": "/coin-sweeper/static/css/main.fa78995b.css.map",
+    "main.a9b0259e.js.map": "/coin-sweeper/static/js/main.a9b0259e.js.map",
+    "453.9966abe1.chunk.js.map": "/coin-sweeper/static/js/453.9966abe1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fa78995b.css",
+    "static/js/main.a9b0259e.js"
+  ]
+}
