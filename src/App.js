@@ -8,7 +8,8 @@ function Game() {
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
   const boxSizeWidth = window.innerWidth < 800 ? 150 : 200;
   const boxSizeHeight = window.innerWidth < 800 ? 20 : 30;
-  const boxBottom = window.innerWidth < 800 ? 100 : 45;
+  const boxBottom = window.innerWidth < 800 ? 70 : 45;
+
 
   const [colliderColor, setColliderColor] = useState("#2e4855"); // Yeni renk durumu
 
@@ -74,8 +75,8 @@ function Game() {
     const containerWidth = containerRef.current.clientWidth;
     const containerHeight = containerRef.current.clientHeight;
     const obstacleSize = containerWidth < 600 ? 6 : 5;
-    const obstacleRows = containerWidth < 600 ? 7 : 12;
-    const obstacleCols = containerWidth < 600 ? 8 : 20;
+    const obstacleRows = containerWidth < 600 ? 9 : 12;
+    const obstacleCols = containerWidth < 600 ? 10 : 20;
     const spacingMultiplier = 0.8;
     const obstacleSpacingX = containerWidth / obstacleCols;
     const obstacleSpacingY =
