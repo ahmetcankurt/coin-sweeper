@@ -2,23 +2,33 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  cursor: pointer ;
 }
 
-.container {
+.container_ {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden; /* Görünmeyen taşmaları gizlemek için */
   background: #f0f0f0;
+
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* Default sizes */
-.box {
+.box_ {
   position: absolute;
-  bottom: 0;
-  height: 30px;
-  background: #0d5477;
-  border-radius: 5px 5px 0 0;
+  bottom: 20px;
+  background: #2e4855;
+  border-radius: 5px;
   margin-bottom: 5px;
 }
 
@@ -65,6 +75,19 @@ body {
   color: black; /* Beyaz yazı rengi */
 }
 
+.best-score {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.score-modal {
+  font-size:  xx-large  ;
+  font-weight: 600;
+  color: white
+}
+
 
 .score {
   position: absolute;
@@ -76,6 +99,10 @@ body {
   color: #333;
 }
 
+h2 {
+  font-weight: 600;
+  color: white !important;
+}
 
 .max-score {
   position: absolute;
@@ -87,9 +114,39 @@ body {
   color: #333;
 }
 
-
 .modal-score {
   font-size: xx-large;
   font-weight: 600;
   color: white;
+}
+
+.fullscreen-btn {
+  position: absolute;
+  top: 30px;
+  right: 60px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+}
+
+.custom-cursor {
+  position: absolute;
+  width: 10px; /* Yuvarlağın çapı */
+  height: 10px; /* Yuvarlağın çapı */
+  border-radius: 50%; /* Yuvarlak şekil */
+  background-color: #fe5c24 ; /* Mavi renk */
+  pointer-events: none; /* Fare olaylarını engelle */
+  transform: translate(-50%, -50%); /* Ortalamak için */
+  z-index: 1000; /* Diğer öğelerin üstünde görünmesi için */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Hafif bir gölge efekti */
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+  .box_ {
+    margin-bottom: 30px;
+  }
 }

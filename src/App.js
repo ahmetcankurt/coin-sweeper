@@ -1,38 +1,85 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import "./style.css";
 
-const boxSizewWidth = 200;
+import CoinSound from "./coin.mp3";
 
 function Game() {
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
+  const boxSizeWidth = window.innerWidth < 800 ? 150 : 200;
+  const boxSizeHeight = window.innerWidth < 800 ? 20 : 30;
+  const boxBottom = window.innerWidth < 800 ? 100 : 45;
+
+  const [colliderColor, setColliderColor] = useState("#2e4855"); // Yeni renk durumu
+
   const [gameOver, setGameOver] = useState(false);
-  const [boxColor, setBoxColor] = useState("#000");
-  const [ballInterval, setBallInterval] = useState(2000); // Başlangıç aralığı
+  const [gameStarted, setGameStarted] = useState(false); // Oyunun başlaması durumu
+  const [ballInterval, setBallInterval] = useState(1500);
   const [balls, setBalls] = useState([]);
   const [score, setScore] = useState(0);
   const engine = useRef(Matter.Engine.create());
   const runner = useRef(Matter.Runner.create());
-  const boxRef = useRef(null);
   const obstacles = useRef([]);
   const requestRef = useRef();
   const containerRef = useRef(null);
   const world = engine.current.world;
+  const colliderRef = useRef();
+  const sensorRef = useRef();
+  const audioRef = useRef(null);
+  const cursorRef = useRef(null);
+  let isPlaying = false;
 
-  const [highScore, setHighScore] = useState(() => {
-    // localStorage'dan yüksek skoru oku
-    const savedHighScore = localStorage.getItem("highScore");
-    return savedHighScore ? parseInt(savedHighScore, 10) : 0;
-  });
+
+  const playSound = () => {
+    if (audioRef.current && !isPlaying) {
+      isPlaying = true;
+
+      // Mevcut sesi durdur ve başa sar
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+
+      // Sesi yeniden başlat
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing sound:", error);
+      });
+
+      // Reset isPlaying after 500 ms (or however long your sound is)
+      setTimeout(() => {
+        isPlaying = false;
+      }, 500);
+    }
+  };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+    }
+  }, []);
+
+  const setContainerHeight = () => {
+    if (containerRef.current) {
+      containerRef.current.style.height = `${window.innerHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    setContainerHeight();
+    window.addEventListener("resize", setContainerHeight);
+    return () => {
+      window.removeEventListener("resize", setContainerHeight);
+    };
+  }, []);
 
   const addObstacles = () => {
     const containerWidth = containerRef.current.clientWidth;
     const containerHeight = containerRef.current.clientHeight;
-    const obstacleSize = containerWidth < 600 ? 6 : 9;
-    const obstacleRows = containerWidth < 600 ? 5 : 6;
-    const obstacleCols = containerWidth < 600 ? 6 : 18;
+    const obstacleSize = containerWidth < 600 ? 6 : 5;
+    const obstacleRows = containerWidth < 600 ? 7 : 12;
+    const obstacleCols = containerWidth < 600 ? 8 : 20;
+    const spacingMultiplier = 0.8;
     const obstacleSpacingX = containerWidth / obstacleCols;
-    const obstacleSpacingY = containerHeight / (obstacleRows + 2);
+    const obstacleSpacingY =
+      (containerHeight / (obstacleRows + 2)) * spacingMultiplier;
 
     const newObstacles = [];
     for (let row = 0; row < obstacleRows; row++) {
@@ -67,7 +114,46 @@ function Game() {
     ];
 
     obstacles.current = [...newObstacles, ...frameObstacles];
-    Matter.Composite.add(world, [...newObstacles, ...frameObstacles]);
+
+    const colliderWidth = boxSizeWidth;
+    const colliderHeight = boxSizeHeight;
+    const radius = 2; // Köşe yarıçapı
+    const collider = Matter.Bodies.fromVertices(
+      containerWidth / 2,
+      containerHeight - colliderHeight / 2,
+      [
+        { x: -colliderWidth / 2 + radius, y: -colliderHeight / 2 }, // Sol üst köşe
+        { x: colliderWidth / 2 - radius, y: -colliderHeight / 2 }, // Sağ üst köşe
+        { x: colliderWidth / 2, y: -colliderHeight / 2 + radius }, // Sağ üst yarı
+        { x: colliderWidth / 2, y: colliderHeight / 2 - radius }, // Sağ alt yarı
+        { x: colliderWidth / 2 - radius, y: colliderHeight / 2 }, // Sağ alt köşe
+        { x: -colliderWidth / 2 + radius, y: colliderHeight / 2 }, // Sol alt köşe
+        { x: -colliderWidth / 2, y: colliderHeight / 2 - radius }, // Sol alt yarı
+        { x: -colliderWidth / 2, y: -colliderHeight / 2 + radius }, // Sol üst yarı
+      ],
+      {
+        isStatic: true,
+       render: { fillStyle: colliderColor }, // Burayı güncelledik
+      }
+    );
+    
+
+    colliderRef.current = collider;
+    Matter.Composite.add(world, [...newObstacles, ...frameObstacles, collider]);
+
+    const sensor = Matter.Bodies.rectangle(
+      containerWidth / 2,
+      containerHeight,
+      containerWidth,
+      3,
+      {
+        isStatic: true,
+        isSensor: true,
+        render: { fillStyle: "red" },
+      }
+    );
+    sensorRef.current = sensor;
+    Matter.Composite.add(world, sensor);
   };
 
   useEffect(() => {
@@ -106,22 +192,44 @@ function Game() {
     ];
 
     Matter.Composite.add(world, boundaries);
-
     addObstacles();
+
+    Matter.Events.on(engine.current, "collisionStart", (event) => {
+      const pairs = event.pairs;
+      pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+
+        if (
+          (bodyA === colliderRef.current && bodyB.circleRadius) ||
+          (bodyB === colliderRef.current && bodyA.circleRadius)
+        ) {
+          setScore((prevScore) => prevScore + 1);
+          playSound();
+
+          const ballToRemove = bodyA.circleRadius ? bodyA : bodyB;
+          Matter.Composite.remove(world, ballToRemove);
+        }
+
+        if (
+          (bodyA === sensorRef.current && bodyB.circleRadius) ||
+          (bodyB === sensorRef.current && bodyA.circleRadius)
+        ) {
+          setGameOver(true);
+        }
+      });
+    });
 
     return () => {
       Matter.Render.stop(render);
       Matter.Runner.stop(runner.current);
       Matter.World.clear(world);
     };
-  }, [world]); // Add 'world' to dependency array
+  }, [world]);
 
   useEffect(() => {
-    if (gameOver) return;
+    if (gameOver || !gameStarted) return; // Oyuna başlamadıysa top yaratma işlemi başlamasın
 
     const intervalId = setInterval(() => {
-      if (obstacles.current.length === 0) return;
-
       const containerWidth = containerRef.current.clientWidth;
       const ballSize = window.innerWidth < 600 ? 10 : 15;
       const margin = containerWidth * 0.03;
@@ -133,21 +241,19 @@ function Game() {
         0,
         ballSize,
         {
-          restitution: 0.8,
+          restitution: 0.7,
           render: { fillStyle: "#ffc32d" },
-          frictionAir: 0.02,
+          frictionAir: 0.03,
         }
       );
 
       Matter.Composite.add(engine.current.world, newBall);
       setBalls((prevBalls) => [...prevBalls, newBall]);
-
-      // Aralığı 25 ms kısalt
-      setBallInterval((prevInterval) => Math.max(100, prevInterval - 40));
+      setBallInterval((prevInterval) => Math.max(100, prevInterval));
     }, ballInterval);
 
-    return () => clearInterval(intervalId); // Mevcut intervali temizle
-  }, [gameOver, ballInterval]); // ballInterval'i bağımlılık olarak ekleyin
+    return () => clearInterval(intervalId);
+  }, [gameOver, gameStarted, ballInterval]);
 
   useEffect(() => {
     const updateBalls = () => {
@@ -157,41 +263,7 @@ function Game() {
         const ballBottom = ball.position.y + ball.circleRadius;
         const containerHeight = containerRef.current.clientHeight;
 
-        const boxElement = boxRef.current;
-        if (!boxElement) return true; // Kutu yoksa balonu koru
-        const boxWidth = boxElement.clientWidth;
-        const boxHeight = boxElement.clientHeight;
-
-        const ballRect = {
-          left: ball.position.x - ball.circleRadius,
-          right: ball.position.x + ball.circleRadius,
-          top: ball.position.y - ball.circleRadius,
-          bottom: ball.position.y + ball.circleRadius,
-        };
-        const boxRect = {
-          left: boxX,
-          right: boxX + boxWidth,
-          top: containerHeight - boxHeight - 5,
-          bottom: containerHeight,
-        };
-
-        const isCollision =
-          ballRect.bottom >= boxRect.top &&
-          ballRect.top <= boxRect.bottom &&
-          ballRect.right >= boxRect.left &&
-          ballRect.left <= boxRect.right;
-
-        if (isCollision) {
-          setScore((prevScore) => prevScore + 1);
-          setBoxColor("#f00");
-          setTimeout(() => setBoxColor("#000"), 200);
-          Matter.World.remove(world, ball);
-          return false;
-        }
-
         if (ballBottom >= containerHeight) {
-          setGameOver(true);
-          Matter.World.remove(world, ball);
           return false;
         }
 
@@ -204,76 +276,92 @@ function Game() {
 
     requestRef.current = requestAnimationFrame(updateBalls);
     return () => cancelAnimationFrame(requestRef.current);
-  }, [boxX, gameOver, balls, world]); // Add 'world' to dependency array
+  }, [boxX, gameOver, balls, world]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (gameOver) return;
+      if (gameOver || !gameStarted) return; // Oyun başlamadıysa hareket etmeye izin verme
 
       const containerWidth = containerRef.current.clientWidth;
-      const boxWidth = boxRef.current
-        ? boxRef.current.clientWidth
-        : boxSizewWidth;
       const margin = 20;
-      const maxX = containerWidth - boxWidth - margin;
+      const maxX = containerWidth - boxSizeWidth - margin;
       const newBoxX =
         e.clientX -
         containerRef.current.getBoundingClientRect().left -
-        boxWidth / 2;
+        boxSizeWidth / 2;
 
       setBoxX(Math.max(margin, Math.min(maxX, newBoxX)));
+
+      if (colliderRef.current) {
+        Matter.Body.setPosition(colliderRef.current, {
+          x: boxX + boxSizeWidth / 2,
+          y: containerRef.current.clientHeight - boxBottom,
+        });
+      }
+
+      if (cursorRef.current) {
+        cursorRef.current.style.left = `${e.clientX}px`;
+        cursorRef.current.style.top = `${e.clientY}px`;
+      }
     };
+
+  
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [gameOver]);
+  }, [boxX, gameOver, gameStarted]);
 
-  const resetGame = () => {
-    setBoxX(window.innerWidth / 2 - 50);
+  const handleStartGame = () => {
+    setGameStarted(true);
     setGameOver(false);
-    setBoxColor("#000");
-    setBalls([]);
     setScore(0);
-    obstacles.current = [];
-    Matter.World.clear(world); // Dünya temizleniyor
-    Matter.Composite.add(world, obstacles.current); // Yeniden engeller ekleniyor
-    addObstacles(); // Yeni engeller ekle
   };
 
-  useEffect(() => {
-    if (gameOver) {
-      if (score > highScore) {
-        setHighScore(score);
-        localStorage.setItem("highScore", score); // Yeni en yüksek skoru kaydet
-      }
-    }
-  }, [gameOver, score, highScore]);
+  const restartGame = () => {
+    setGameOver(false);
+    setBalls([]);
+    setScore(0);
+    Matter.Composite.clear(world);
+    addObstacles();
+  };
 
   return (
-    <div className="container" ref={containerRef}>
-      <canvas
-        width={containerRef.current ? containerRef.current.clientWidth : 0}
-        height={containerRef.current ? containerRef.current.clientHeight : 0}
-      />
-      <div className="score">
-        <span>Skor: {score}</span>
-      </div>
-      <span className="max-score">Best Skor : {highScore}</span>
-      <div
-        className="box"
-        ref={boxRef}
-        style={{ left: boxX, backgroundColor: boxColor, width: boxSizewWidth }}
-      />
-      <div className={`game-over ${gameOver ? "visible" : ""}`}>
-        <h2>Oyun Bitti</h2>
-        <span className="modal-score">Skorunuz: {score}</span>
-        <div>
-          <button onClick={resetGame} className="restart-button">
-            Tekrar Başlat
+    <>
+      {!gameStarted && (
+        <div className={"game-over  visible"}>
+          <h2> Topu Yakala!</h2>
+          <button className="restart-button" onClick={handleStartGame}>
+            Oyunu Başlat
           </button>
         </div>
+      )}
+
+      <div className="game-container">
+        <div className="container_" ref={containerRef}>
+          <canvas
+            width={containerRef.current ? containerRef.current.clientWidth : 0}
+            height={
+              containerRef.current ? containerRef.current.clientHeight : 0
+            }
+          />
+          <div className="score">
+            <span>Skor: {score}</span>
+          </div>
+          <div className={`game-over ${gameOver ? "visible" : ""}`}>
+            <h2>Oyun Bitti!</h2>
+            <span>Skor: {score}</span>
+            <button className="restart-button" onClick={restartGame}>
+              Yeniden Başlat
+            </button>
+          </div>
+        </div>
+        {!gameOver && ( <div className="custom-cursor" ref={cursorRef} /> )}
+
+        <audio ref={audioRef}>
+          <source src={CoinSound} type="audio/mpeg" />
+        </audio>
       </div>
-    </div>
+    </>
   );
 }
 
