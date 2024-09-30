@@ -3,6 +3,7 @@ body {
   padding: 0;
   font-family: Arial, sans-serif;
   cursor: pointer ;
+  overflow: hidden;
 }
 
 .container_ {
@@ -142,11 +143,18 @@ h2 {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Hafif bir gölge efekti */
 }
 
-
-
-
-@media screen and (max-width: 768px) {
-  .box_ {
-    margin-bottom: 30px;
-  }
+.mute-button {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: red;
+  margin-left: 10px;
 }
+.mute-button:hover {
+  color: #fe5c24;
+  background-color: #fe5c24 ;
+  border-radius: 5px;
+
+}
+
