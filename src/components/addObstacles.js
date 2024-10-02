@@ -42,24 +42,15 @@ const addObstacles = (containerRef, boxSizeWidth, boxSizeHeight, world, collider
     ),
   ];
 
-  const colliderWidth = boxSizeWidth;
-  const colliderHeight = boxSizeHeight;
-  const radius = 2; 
-  const collider = Matter.Bodies.fromVertices(
-    containerWidth / 2,
-    containerHeight - colliderHeight / 2,
-    [
-      { x: -colliderWidth / 2 + radius, y: -colliderHeight / 2 },
-      { x: colliderWidth / 2 - radius, y: -colliderHeight / 2 },
-      { x: colliderWidth / 2, y: -colliderHeight / 2 + radius },
-      { x: colliderWidth / 2, y: colliderHeight / 2 - radius },
-      { x: colliderWidth / 2 - radius, y: colliderHeight / 2 },
-      { x: -colliderWidth / 2 + radius, y: colliderHeight / 2 },
-      { x: -colliderWidth / 2, y: -colliderHeight / 2 + radius },
-    ],
+  // Collider dikdörtgeni güncellendi
+  const collider = Matter.Bodies.rectangle(
+    containerWidth / 2, // X konumu
+    containerHeight - boxSizeHeight / 2, // Y konumu
+    boxSizeWidth, // Genişlik
+    boxSizeHeight, // Yükseklik
     {
       isStatic: true,
-      render: { fillStyle: "#fe5c24" },
+      render: { fillStyle: "#fe5c24" }, // Başlangıçta turuncu renk
     }
   );
 

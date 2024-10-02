@@ -17,11 +17,89 @@ function GameCanvas({
   boxSizeWidth,
   audioRef,
 }) {
-  const [ballInterval, setBallInterval] = useState(1500);
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
   const boxBottom = window.innerWidth < 800 ? 70 : 45;
   const requestRef = useRef();
   const runner = useRef(Matter.Runner.create());
+
+  const createBall = () => {
+    const containerWidth = containerRef.current.clientWidth;
+    const ballSize = window.innerWidth < 600 ? 10 : 15;
+    const margin = containerWidth * 0.03;
+    const ballXMin = margin;
+    const ballXMax = containerWidth - margin - ballSize * 2;
+
+    return Matter.Bodies.circle(
+      Math.random() * (ballXMax - ballXMin) + ballXMin,
+      0,
+      ballSize,
+      {
+        restitution: 0.85,
+        render: { fillStyle: "#ff8d00" },
+        frictionAir: 0.03,
+      }
+    );
+  };
+
+  const handleCollision = (event) => {
+    const pairs = event.pairs;
+    pairs.forEach((pair) => {
+      const { bodyA, bodyB } = pair;
+
+      if (
+        (bodyA === colliderRef.current && bodyB.circleRadius) ||
+        (bodyB === colliderRef.current && bodyA.circleRadius)
+      ) {
+        setScore((prevScore) => prevScore + 1);
+        playSound();
+        const ballToRemove = bodyA.circleRadius ? bodyA : bodyB;
+        Matter.Composite.remove(world, ballToRemove);
+      }
+
+      if (
+        (bodyA === sensorRef.current && bodyB.circleRadius) ||
+        (bodyB === sensorRef.current && bodyA.circleRadius)
+      ) {
+        setGameOver(true);
+      }
+    });
+  };
+
+  const updateBalls = () => {
+    if (gameOver) return; // Oyun bittiğinde dur
+
+    const updatedBalls = balls.filter((ball) => {
+      const ballBottom = ball.position.y + ball.circleRadius;
+      const containerHeight = containerRef.current.clientHeight;
+
+      return ballBottom < containerHeight; // Topun konteynerin altında kalıp kalmadığını kontrol et
+    });
+
+    setBalls(updatedBalls);
+    requestRef.current = requestAnimationFrame(updateBalls);
+  };
+
+  const handleMouseMove = (e) => {
+    if (gameOver) return; // Oyun bittiğinde kutu hareket etmesin
+
+    const containerWidth = containerRef.current.clientWidth;
+    const margin = 20;
+    const maxX = containerWidth - boxSizeWidth - margin;
+
+    const newBoxX =
+      e.clientX - containerRef.current.getBoundingClientRect().left - boxSizeWidth / 2;
+
+    setBoxX(Math.max(margin, Math.min(maxX, newBoxX)));
+  };
+
+  const updatePosition = () => {
+    if (colliderRef.current) {
+      Matter.Body.setPosition(colliderRef.current, {
+        x: boxX + boxSizeWidth / 2,
+        y: containerRef.current.clientHeight - boxBottom,
+      });
+    }
+  };
 
   useEffect(() => {
     const canvas = containerRef.current.querySelector("canvas");
@@ -61,140 +139,55 @@ function GameCanvas({
     Matter.Composite.add(world, boundaries);
     addObstacles();
 
-    Matter.Events.on(engine.current, "collisionStart", (event) => {
-      const pairs = event.pairs;
-      pairs.forEach((pair) => {
-        const { bodyA, bodyB } = pair;
-
-        if (
-          (bodyA === colliderRef.current && bodyB.circleRadius) ||
-          (bodyB === colliderRef.current && bodyA.circleRadius)
-        ) {
-          setScore((prevScore) => prevScore + 1);
-          playSound(); // Her skor artışında sesi baştan çal
-          const ballToRemove = bodyA.circleRadius ? bodyA : bodyB;
-          Matter.Composite.remove(world, ballToRemove);
-        }
-
-        if (
-          (bodyA === sensorRef.current && bodyB.circleRadius) ||
-          (bodyB === sensorRef.current && bodyA.circleRadius)
-        ) {
-          setGameOver(true);
-        }
-      });
-    });
+    Matter.Events.on(engine.current, "collisionStart", handleCollision);
 
     return () => {
       Matter.Render.stop(render);
       Matter.Runner.stop(runner.current);
       Matter.World.clear(world);
+      Matter.Events.off(engine.current, "collisionStart", handleCollision);
     };
   }, [world]);
 
   useEffect(() => {
-    const updateBalls = () => {
-      if (gameOver) return;
-
-      const updatedBalls = balls.filter((ball) => {
-        const ballBottom = ball.position.y + ball.circleRadius;
-        const containerHeight = containerRef.current.clientHeight;
-
-        return ballBottom < containerHeight;
-      });
-
-      setBalls(updatedBalls);
-      requestRef.current = requestAnimationFrame(updateBalls);
-    };
-
     requestRef.current = requestAnimationFrame(updateBalls);
     return () => cancelAnimationFrame(requestRef.current);
   }, [gameOver, balls]);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (gameOver || !gameStarted) return; // Oyun başlamadıysa hareket etmeye izin verme
-
-      const containerWidth = containerRef.current.clientWidth;
-      const margin = 20;
-      const maxX = containerWidth - boxSizeWidth - margin;
-
-      // Mouse hareketi için X koordinatını hesaplama
-      const newBoxX =
-        e.clientX -
-        containerRef.current.getBoundingClientRect().left -
-        boxSizeWidth / 2;
-
-      setBoxX(Math.max(margin, Math.min(maxX, newBoxX)));
-    };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [gameOver, gameStarted]);
+  }, [gameOver]);
 
   useEffect(() => {
-    if (colliderRef.current) {
-      Matter.Body.setPosition(colliderRef.current, {
-        x: boxX + boxSizeWidth / 2,
-        y: containerRef.current.clientHeight - boxBottom,
-      });
-    }
+    updatePosition();
   }, [boxX, colliderRef, boxSizeWidth, containerRef, boxBottom]);
 
   useEffect(() => {
-    if (gameOver || !gameStarted) return; // Oyuna başlamadıysa top yaratma işlemi başlamasın
-
-    let ballCount = 0; // Top sayacını başlat
+    if (gameOver) {
+      // Oyun bittiğinde mevcut topların dinamik özelliklerini sıfırla
+      balls.forEach((ball) => {
+        Matter.Body.setStatic(ball, true); // Topları statik yap
+      });
+      return; // Oyun bittiği için topları oluşturmaya devam etme
+    }
 
     const intervalId = setInterval(() => {
-      const containerWidth = containerRef.current.clientWidth;
-      const ballSize = window.innerWidth < 600 ? 10 : 15;
-      const margin = containerWidth * 0.03;
-      const ballXMin = margin;
-      const ballXMax = containerWidth - margin - ballSize * 2;
-
-      const createBall = () => {
-        return Matter.Bodies.circle(
-          Math.random() * (ballXMax - ballXMin) + ballXMin,
-          0,
-          ballSize,
-          {
-            restitution: 0.85,
-            render: { fillStyle: "#ff8d00" },
-            frictionAir: 0.03,
-          }
-        );
-      };
-
-      if (ballCount >= 30) {
-        // 12. toptan sonra ikili top yarat
-        const ball1 = createBall();
-        const ball2 = createBall();
-        Matter.Composite.add(engine.current.world, [ball1, ball2]);
-        setBalls((prevBalls) => [...prevBalls, ball1, ball2]);
-      } else {
-        // Tekli top yarat
-        const newBall = createBall();
-        Matter.Composite.add(engine.current.world, newBall);
-        setBalls((prevBalls) => [...prevBalls, newBall]);
-      }
-
-      ballCount++; // Top sayısını artır
-      setBallInterval((prevInterval) => Math.max(100, prevInterval));
-    }, ballInterval);
+      if (document.hidden) return; // Eğer sekme gizliyse topları oluşturma
+      const newBall = createBall();
+      Matter.Composite.add(engine.current.world, newBall);
+      setBalls((prevBalls) => [...prevBalls, newBall]);
+    }, 1500);
 
     return () => clearInterval(intervalId);
-  }, [gameOver, gameStarted, ballInterval]);
+  }, [gameOver]);
 
   const playSound = () => {
     if (audioRef.current) {
-      // Mevcut sesi durdur ve başa sar
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-
-      // Sesi yeniden başlat
       audioRef.current.play().catch((error) => {
         console.error("Error playing sound:", error);
       });

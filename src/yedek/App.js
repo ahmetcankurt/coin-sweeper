@@ -269,17 +269,20 @@ function Game() {
   }, [world]);
 
   useEffect(() => {
-    if (gameOver || !gameStarted) return; // Oyuna başlamadıysa top yaratma işlemi başlamasın
-
-    let ballCount = 0; // Top sayacını başlat
-
+    if (gameOver || !gameStarted) return; // Oyun bitmemişse veya başlamamışsa dur
+  
+    let ballCount = 0;
+  
     const intervalId = setInterval(() => {
+      if (document.hidden) return; // Eğer sekme gizliyse topları oluşturma
+  
       const containerWidth = containerRef.current.clientWidth;
       const ballSize = window.innerWidth < 600 ? 10 : 15;
       const margin = containerWidth * 0.03;
       const ballXMin = margin;
       const ballXMax = containerWidth - margin - ballSize * 2;
-
+  
+      // Rastgele top oluşturma
       const createBall = () => {
         return Matter.Bodies.circle(
           Math.random() * (ballXMax - ballXMin) + ballXMin,
@@ -292,26 +295,26 @@ function Game() {
           }
         );
       };
-
+  
       if (ballCount >= 30) {
-        // 12. toptan sonra ikili top yarat
+        // İkili top yaratma
         const ball1 = createBall();
         const ball2 = createBall();
         Matter.Composite.add(engine.current.world, [ball1, ball2]);
         setBalls((prevBalls) => [...prevBalls, ball1, ball2]);
       } else {
-        // Tekli top yarat
+        // Tekli top yaratma
         const newBall = createBall();
         Matter.Composite.add(engine.current.world, newBall);
         setBalls((prevBalls) => [...prevBalls, newBall]);
       }
-
+  
       ballCount++; // Top sayısını artır
-      setBallInterval((prevInterval) => Math.max(100, prevInterval));
     }, ballInterval);
-
+  
     return () => clearInterval(intervalId);
   }, [gameOver, gameStarted, ballInterval]);
+  
 
   useEffect(() => {
     const updateBalls = () => {
