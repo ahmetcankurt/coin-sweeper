@@ -5,7 +5,6 @@ function GameCanvas({
   containerRef,
   setScore,
   setGameOver,
-  playSound,
   addObstacles,
   world,
   engine,
@@ -16,6 +15,7 @@ function GameCanvas({
   gameOver,
   gameStarted,
   boxSizeWidth,
+  audioRef,
 }) {
   const [ballInterval, setBallInterval] = useState(1500);
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
@@ -187,6 +187,19 @@ function GameCanvas({
 
     return () => clearInterval(intervalId);
   }, [gameOver, gameStarted, ballInterval]);
+
+  const playSound = () => {
+    if (audioRef.current) {
+      // Mevcut sesi durdur ve başa sar
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+
+      // Sesi yeniden başlat
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing sound:", error);
+      });
+    }
+  };
 
   return (
     <div className="container_" ref={containerRef}>

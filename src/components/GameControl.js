@@ -1,6 +1,12 @@
 import { memo } from "react";
 
-function GameControl({ gameStarted, handleStartGame }) {
+function GameControl({ gameStarted, setGameStarted, setGameOver, setScore }) {
+
+  const handleStartGame = () => {
+    setGameStarted(true);
+    setGameOver(false);
+    setScore(0);
+  };
 
   return (
     <>

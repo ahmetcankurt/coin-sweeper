@@ -1,7 +1,28 @@
 import React, { memo } from "react";
 
-function GameMuteButton({ isMuted, toggleMute }) {
-  
+function GameMuteButton({
+  isMuted,
+  setIsMuted,
+  audioRef,
+  gameMusicRef,
+  gameOverAudioRef,
+}) {
+  const toggleMute = () => {
+    setIsMuted((prevMuted) => {
+      const newMutedState = !prevMuted;
+      if (gameMusicRef.current) {
+        gameMusicRef.current.muted = newMutedState;
+      }
+      if (audioRef.current) {
+        audioRef.current.muted = newMutedState;
+      }
+      if (gameOverAudioRef.current) {
+        gameOverAudioRef.current.muted = newMutedState;
+      }
+      return newMutedState;
+    });
+  };
+
   return (
     <>
       <button className="mute-button" onClick={toggleMute}>
