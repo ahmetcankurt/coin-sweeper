@@ -42,10 +42,7 @@ function GameCanvas({
   };
 
   const handleCollision = (event) => {
-    const pairs = event.pairs;
-    pairs.forEach((pair) => {
-      const { bodyA, bodyB } = pair;
-
+    event.pairs.forEach(({ bodyA, bodyB }) => {
       if (
         (bodyA === colliderRef.current && bodyB.circleRadius) ||
         (bodyB === colliderRef.current && bodyA.circleRadius)
@@ -66,13 +63,12 @@ function GameCanvas({
   };
 
   const updateBalls = () => {
-    if (gameOver) return; // Oyun bittiğinde dur
+    if (gameOver) return;
 
     const updatedBalls = balls.filter((ball) => {
       const ballBottom = ball.position.y + ball.circleRadius;
       const containerHeight = containerRef.current.clientHeight;
-
-      return ballBottom < containerHeight; // Topun konteynerin altında kalıp kalmadığını kontrol et
+      return ballBottom < containerHeight;
     });
 
     setBalls(updatedBalls);
@@ -80,7 +76,7 @@ function GameCanvas({
   };
 
   const handleMouseMove = (e) => {
-    if (gameOver) return; // Oyun bittiğinde kutu hareket etmesin
+    if (gameOver) return;
 
     const containerWidth = containerRef.current.clientWidth;
     const margin = 20;
@@ -163,26 +159,26 @@ function GameCanvas({
 
   useEffect(() => {
     updatePosition();
-  }, [boxX, colliderRef, boxSizeWidth, containerRef, boxBottom]);
+  }, [boxX]);
 
   useEffect(() => {
     if (gameOver) {
-      // Oyun bittiğinde mevcut topların dinamik özelliklerini sıfırla
-      balls.forEach((ball) => {
-        Matter.Body.setStatic(ball, true); // Topları statik yap
-      });
-      return; // Oyun bittiği için topları oluşturmaya devam etme
+      balls.forEach((ball) => Matter.Body.setStatic(ball, true));
+      return;
     }
 
-    const intervalId = setInterval(() => {
-      if (document.hidden) return; // Eğer sekme gizliyse topları oluşturma
-      const newBall = createBall();
-      Matter.Composite.add(engine.current.world, newBall);
-      setBalls((prevBalls) => [...prevBalls, newBall]);
-    }, 1500);
+    let intervalId = null;
+    if (gameStarted) {
+      intervalId = setInterval(() => {
+        if (document.hidden) return;
+        const newBall = createBall();
+        Matter.Composite.add(engine.current.world, newBall);
+        setBalls((prevBalls) => [...prevBalls, newBall]);
+      }, 1500);
+    }
 
     return () => clearInterval(intervalId);
-  }, [gameOver]);
+  }, [gameOver, gameStarted]); // gameStarted'i buraya ekledik
 
   const playSound = () => {
     if (audioRef.current) {

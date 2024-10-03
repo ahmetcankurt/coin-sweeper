@@ -12,35 +12,42 @@ function GameStatus({
   world,
   addObstacles,
 }) {
-
   const restartGame = () => {
     setGameOver(false);
-    setBalls([]);
-    setScore(0);
-    Matter.Composite.clear(world);
-    addObstacles();
+    setBalls([]); // Clear balls
+    setScore(0);  // Reset score
+    Matter.Composite.clear(world); // Clear Matter.js world
+    addObstacles(); // Add obstacles again
   };
 
   const handleStartGame = () => {
-    setGameStarted(true);
-    setGameOver(false);
-    setScore(0);
+    setGameStarted(true); // Mark game as started
+    setGameOver(false);   // Reset game over state
+    setScore(0);          // Reset score
   };
 
   return (
     <div>
       {!gameStarted ? (
-        <div className={"game-over visible"}>
+        <div className="game-over visible" aria-live="polite">
           <h2>Topu Yakala!</h2>
-          <button className="restart-button" onClick={handleStartGame}>
+          <button 
+            className="restart-button" 
+            onClick={handleStartGame}
+            aria-label="Oyunu Başlat"
+          >
             Oyunu Başlat
           </button>
         </div>
       ) : gameOver ? (
-        <div className={`game-over visible`}>
+        <div className="game-over visible" aria-live="polite">
           <h2>Oyun Bitti!</h2>
           <span>Skor: {score}</span>
-          <button className="restart-button" onClick={restartGame}>
+          <button 
+            className="restart-button" 
+            onClick={restartGame}
+            aria-label="Yeniden Başlat"
+          >
             Yeniden Başlat
           </button>
         </div>
