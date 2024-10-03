@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/coin-sweeper/static/css/main.4d20f897.css",
+    "main.css": "/coin-sweeper/static/css/main.a48699a5.css",
     "main.js": "/coin-sweeper/static/js/main.1471aef2.js",
     "static/js/206.a0e81d30.chunk.js": "/coin-sweeper/static/js/206.a0e81d30.chunk.js",
     "static/media/coin-sweper-logo.png": "/coin-sweeper/static/media/coin-sweper-logo.55b470a0a8b607f08f5f.png",
@@ -10,7 +10,7 @@
     "index.html": "/coin-sweeper/index.html"
   },
   "entrypoints": [
-    "static/css/main.4d20f897.css",
+    "static/css/main.a48699a5.css",
     "static/js/main.1471aef2.js"
   ]
 }
