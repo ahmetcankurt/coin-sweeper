@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/coin-sweeper/static/css/main.4e8d06e5.css",
-    "main.js": "/coin-sweeper/static/js/main.dcd49246.js",
+    "main.css": "/coin-sweeper/static/css/main.4d20f897.css",
+    "main.js": "/coin-sweeper/static/js/main.1471aef2.js",
     "static/js/206.a0e81d30.chunk.js": "/coin-sweeper/static/js/206.a0e81d30.chunk.js",
+    "static/media/coin-sweper-logo.png": "/coin-sweeper/static/media/coin-sweper-logo.55b470a0a8b607f08f5f.png",
     "static/media/game-music.mp3": "/coin-sweeper/static/media/game-music.176e67015c21456a7391.mp3",
     "static/media/coin.mp3": "/coin-sweeper/static/media/coin.5a742b36cd7d42671056.mp3",
     "static/media/game-over.mp3": "/coin-sweeper/static/media/game-over.3c6beab6375d5428e0c4.mp3",
     "index.html": "/coin-sweeper/index.html"
   },
   "entrypoints": [
-    "static/css/main.4e8d06e5.css",
-    "static/js/main.dcd49246.js"
+    "static/css/main.4d20f897.css",
+    "static/js/main.1471aef2.js"
   ]
 }
