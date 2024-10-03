@@ -1,6 +1,6 @@
   import Matter from "matter-js";
 
-  const addObstacles = (containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef) => {
+  const GameObstacles = (containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef) => {
     const containerWidth = containerRef.current.clientWidth;
     const containerHeight = containerRef.current.clientHeight;
     const obstacleSize = containerWidth < 600 ? 6 : 5;
@@ -76,4 +76,4 @@
     Matter.Composite.add(world, sensor);
   };
 
-  export default addObstacles;
+  export default GameObstacles;

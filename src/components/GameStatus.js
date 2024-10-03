@@ -1,5 +1,8 @@
 import React, { memo } from "react";
 import Matter from "matter-js";
+import Fireworks from "./Fireworks"; // Havai fişek bileşenini içe aktar
+
+import Logo from "../assets/images/coin-sweper-logo.png";
 
 function GameStatus({
   gameOver,
@@ -10,46 +13,52 @@ function GameStatus({
   setBalls,
   setScore,
   world,
-  addObstacles,
+  GameObstacles,
 }) {
   const restartGame = () => {
     setGameOver(false);
     setBalls([]); // Clear balls
-    setScore(0);  // Reset score
+    setScore(0); // Reset score
     Matter.Composite.clear(world); // Clear Matter.js world
-    addObstacles(); // Add obstacles again
+    GameObstacles(); // Add obstacles again
   };
 
   const handleStartGame = () => {
     setGameStarted(true); // Mark game as started
-    setGameOver(false);   // Reset game over state
-    setScore(0);          // Reset score
+    setGameOver(false); // Reset game over state
+    setScore(0); // Reset score
   };
 
   return (
     <div>
       {!gameStarted ? (
         <div className="game-over visible" aria-live="polite">
-          <h2>Topu Yakala!</h2>
-          <button 
-            className="restart-button" 
-            onClick={handleStartGame}
-            aria-label="Oyunu Başlat"
-          >
-            Oyunu Başlat
-          </button>
+          <div className="game-over-card">
+            <h2>Topu Yakala!</h2>
+            <button
+              className="restart-button"
+              onClick={handleStartGame}
+              aria-label="Oyunu Başlat"
+            >
+              Oyunu Başlat
+            </button>
+          </div>
         </div>
       ) : gameOver ? (
         <div className="game-over visible" aria-live="polite">
-          <h2>Oyun Bitti!</h2>
-          <span>Skor: {score}</span>
-          <button 
-            className="restart-button" 
-            onClick={restartGame}
-            aria-label="Yeniden Başlat"
-          >
-            Yeniden Başlat
-          </button>
+          <Fireworks active={gameOver} />
+          <div className="game-over-card">
+            <h2>Oyun Bitti!</h2>
+            <span className="score-card">Skor: {score}</span>
+            <button
+              style={{ zIndex: 1 }}
+              className="restart-button"
+              onClick={restartGame}
+              aria-label="Yeniden Başlat"
+            >
+              Yeniden Başlat
+            </button>
+          </div>
         </div>
       ) : null}
     </div>

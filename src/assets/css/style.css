@@ -69,12 +69,35 @@ body {
   border: none; /* Kenarlık yok */
   border-radius: 5px; /* Kenarları yuvarla */
   cursor: pointer; /* Üzerine gelince imleci değiştir */
+  box-sizing: border-box; /* Box modelini kontrol et */
+  border: 2px solid white; /* Hover öncesi görünmez border */
 }
 
 .restart-button:hover {
   background-color: white; /* Turuncu arka plan */
   color: black; /* Beyaz yazı rengi */
+  border: 2px solid black; /* Hover sırasında border ekle */
 }
+
+.game-over-card {
+  width: 400px; /* Genişlik */
+  height: 300px; /* Yükseklik */
+  border-radius: 15px; /* Kenarları yuvarla */
+  padding: 20px; /* İç boşluk */
+  text-align: center; /* Metni ortala */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Gölge efekti */
+  border: 2px solid white; /* Hover sırasında border ekle */
+  background-color: rgb(255 255 255 / 30%);
+  backdrop-filter: blur(4px);
+
+  display: flex; /* Flexbox kullan */
+  flex-direction: column; /* Dikey olarak diz */
+  align-items: center; /* Yatay ortala */
+  justify-content: center; /* Dikey ortala */
+}
+
+
+
 
 .best-score {
   font-size: 24px;
@@ -89,6 +112,9 @@ body {
   color: white
 }
 
+.score-card {
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 1); /* Gölgeler ekler */
+}
 
 .score {
   position: absolute;
@@ -103,7 +129,11 @@ body {
 h2 {
   font-weight: 600;
   color: white !important;
+  z-index: 1000;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Gölgeler ekler */
 }
+
+
 
 .max-score {
   position: absolute;

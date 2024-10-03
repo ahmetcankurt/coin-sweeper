@@ -5,9 +5,8 @@ import GameAudio from "./components/GameAudio";
 import GameMuteButton from "./components/GameMuteButton";
 import GameStatus from "./components/GameStatus";
 import GameCanvas from "./components/GameCanvas";
-import addObstacles from "./components/addObstacles";
+import GameObstacles from "./components/GameObstacles";
 import GameCursor from "./components/GameCursor";
-import "./assets/css/style.css";
 
 function Game() {
   const boxSizeWidth = window.innerWidth < 800 ? 150 : 200;
@@ -53,7 +52,7 @@ function Game() {
 
   // Tekrar eden kodları ve bağımlılıkları azaltarak render'ı optimize et
   const handleAddObstacles = () => {
-    addObstacles(containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef);
+    GameObstacles(containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef);
   };
 
   return (
@@ -67,14 +66,14 @@ function Game() {
         setBalls={setBalls}
         setScore={setScore}
         world={world}
-        addObstacles={handleAddObstacles} // Düzgün bir fonksiyon referansı geç
+        GameObstacles={handleAddObstacles} // Düzgün bir fonksiyon referansı geç
       />
 
       <GameCanvas
         containerRef={containerRef}
         setScore={setScore}
         setGameOver={setGameOver}
-        addObstacles={handleAddObstacles}
+        GameObstacles={handleAddObstacles}
         world={world}
         engine={engine}
         colliderRef={colliderRef}

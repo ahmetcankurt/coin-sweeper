@@ -5,7 +5,7 @@ function GameCanvas({
   containerRef,
   setScore,
   setGameOver,
-  addObstacles,
+  GameObstacles,
   world,
   engine,
   colliderRef,
@@ -20,7 +20,10 @@ function GameCanvas({
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
   const boxBottom = window.innerWidth < 800 ? 70 : 45;
   const requestRef = useRef();
-  const runner = useRef(Matter.Runner.create());
+  const runner = useRef(Matter.Runner.create({ delta: 1000 / 60 })); // 60 FPS
+  const [fps, setFps] = useState(0);
+  const lastFrameTime = useRef(0); // Değişiklik burada
+  const frameCount = useRef(0);
 
   const createBall = () => {
     const containerWidth = containerRef.current.clientWidth;
@@ -62,19 +65,6 @@ function GameCanvas({
     });
   };
 
-  const updateBalls = () => {
-    if (gameOver) return;
-
-    const updatedBalls = balls.filter((ball) => {
-      const ballBottom = ball.position.y + ball.circleRadius;
-      const containerHeight = containerRef.current.clientHeight;
-      return ballBottom < containerHeight;
-    });
-
-    setBalls(updatedBalls);
-    requestRef.current = requestAnimationFrame(updateBalls);
-  };
-
   const handleMouseMove = (e) => {
     if (gameOver) return;
 
@@ -95,6 +85,36 @@ function GameCanvas({
         y: containerRef.current.clientHeight - boxBottom,
       });
     }
+  };
+
+  const updateBalls = () => {
+    if (gameOver) return;
+
+    setBalls((prevBalls) => {
+      return prevBalls.filter((ball) => {
+        const ballBottom = ball.position.y + ball.circleRadius;
+        const containerHeight = containerRef.current.clientHeight;
+        return ballBottom < containerHeight;
+      });
+    });
+
+    requestRef.current = requestAnimationFrame(updateBalls);
+  };
+
+  // FPS hesaplama fonksiyonu
+  const calculateFPS = (timestamp) => {
+    if (lastFrameTime.current) {
+      const deltaTime = timestamp - lastFrameTime.current;
+      frameCount.current++;
+      if (deltaTime >= 1000) {
+        setFps(frameCount.current);
+        frameCount.current = 0;
+        lastFrameTime.current = timestamp; // Son frame zamanını güncelle
+      }
+    } else {
+      lastFrameTime.current = timestamp; // İlk frame için başlangıç zamanını ayarla
+    }
+    requestRef.current = requestAnimationFrame(calculateFPS);
   };
 
   useEffect(() => {
@@ -133,11 +153,14 @@ function GameCanvas({
     ];
 
     Matter.Composite.add(world, boundaries);
-    addObstacles();
+    GameObstacles();
 
     Matter.Events.on(engine.current, "collisionStart", handleCollision);
 
+    requestRef.current = requestAnimationFrame(calculateFPS); // FPS hesaplamayı başlat
+
     return () => {
+      cancelAnimationFrame(requestRef.current); // FPS hesaplamayı durdur
       Matter.Render.stop(render);
       Matter.Runner.stop(runner.current);
       Matter.World.clear(world);
@@ -178,7 +201,7 @@ function GameCanvas({
     }
 
     return () => clearInterval(intervalId);
-  }, [gameOver, gameStarted]); // gameStarted'i buraya ekledik
+  }, [gameOver, gameStarted]);
 
   const playSound = () => {
     if (audioRef.current) {
@@ -196,6 +219,9 @@ function GameCanvas({
         width={containerRef.current ? containerRef.current.clientWidth : 0}
         height={containerRef.current ? containerRef.current.clientHeight : 0}
       />
+      <div style={{ position: "absolute", top: 10, left: 30, color: "black", fontSize: "20px" }}>
+        fps: {fps}
+      </div>
     </div>
   );
 }

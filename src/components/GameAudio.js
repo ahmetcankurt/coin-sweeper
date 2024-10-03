@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect} from "react";
 import CoinSound from "../assets/sounds/coin.mp3";
 import GameOverSound from "../assets/sounds/game-over.mp3";
 import GameMusic from "../assets/sounds/game-music.mp3";
