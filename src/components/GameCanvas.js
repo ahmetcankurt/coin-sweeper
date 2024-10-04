@@ -18,7 +18,7 @@ function GameCanvas({
   audioRef,
 }) {
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
-  const boxBottom = window.innerWidth < 800 ? 170 : 45; // Collider'ın mobilde 100px yukarıda olmasını sağlar
+  const boxBottom = window.innerWidth < 800 ? 200 : 45; // Collider'ın mobilde 100px yukarıda olmasını sağlar
   const requestRef = useRef();
   const runner = useRef(Matter.Runner.create({ delta: 1000 / 60 })); // 60 FPS
 
