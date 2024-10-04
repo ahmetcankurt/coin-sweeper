@@ -67,6 +67,13 @@ function Game() {
         setScore={setScore}
         world={world}
         GameObstacles={handleAddObstacles} // Düzgün bir fonksiyon referansı geç
+        containerRef={containerRef}
+        boxSizeWidth={boxSizeWidth}
+        boxSizeHeight={boxSizeHeight}
+        colliderRef={colliderRef}
+        sensorRef={sensorRef}
+        boxBottom={window.innerWidth < 800 ? 200 : 45}
+
       />
 
       <GameCanvas

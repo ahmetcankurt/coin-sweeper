@@ -12,14 +12,30 @@ function GameStatus({
   setScore,
   world,
   GameObstacles,
+  containerRef,
+  boxSizeWidth,
+  boxSizeHeight,
+  colliderRef,
+  sensorRef,
+  boxBottom,
 }) {
   const restartGame = () => {
     setGameOver(false);
-    setBalls([]); // Clear balls
-    setScore(0); // Reset score
-    Matter.Composite.clear(world); // Clear Matter.js world
-    GameObstacles(); // Add obstacles again
+    setBalls([]); // Topları temizle
+    setScore(0); // Skoru sıfırla
+    Matter.Composite.clear(world); // Matter.js dünyasını temizle
+    GameObstacles(containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef); // Engelleri tekrar ekle
+  
+    // Collider'ın başlangıç konumunu güncelle
+    if (colliderRef.current) {
+      Matter.Body.setPosition(colliderRef.current, {
+        x: containerRef.current.clientWidth / 2,
+        y: containerRef.current.clientHeight - boxBottom, // Collider'ın yerini ayarlar
+      });
+    }
   };
+  
+  
 
   const handleStartGame = () => {
     setGameStarted(true); // Mark game as started
