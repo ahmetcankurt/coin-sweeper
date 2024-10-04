@@ -1,8 +1,6 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import Matter from "matter-js";
 import Fireworks from "./Fireworks"; // Havai fişek bileşenini içe aktar
-
-import Logo from "../assets/images/coin-sweper-logo.png";
 
 function GameStatus({
   gameOver,

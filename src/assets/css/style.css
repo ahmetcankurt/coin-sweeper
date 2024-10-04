@@ -80,8 +80,7 @@ body {
 }
 
 .game-over-card {
-  width: 450px; /* Genişlik */
-  height: 300px; /* Yükseklik */
+  margin: 10px; /* Kenar boşluğu */
   border-radius: 15px; /* Kenarları yuvarla */
   padding: 20px; /* İç boşluk */
   text-align: center; /* Metni ortala */
@@ -95,8 +94,6 @@ body {
   align-items: center; /* Yatay ortala */
   justify-content: center; /* Dikey ortala */
 }
-
-
 
 
 .best-score {

@@ -3,10 +3,10 @@
   const GameObstacles = (containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef) => {
     const containerWidth = containerRef.current.clientWidth;
     const containerHeight = containerRef.current.clientHeight;
-    const obstacleSize = containerWidth < 600 ? 6 : 5;
-    const obstacleRows = containerWidth < 600 ? 9 : 12;
-    const obstacleCols = containerWidth < 600 ? 10 : 20;
-    const spacingMultiplier = 0.8;
+    const obstacleSize = containerWidth < 600 ? 2.5 : 5;
+    const obstacleRows = containerWidth < 600 ? 20 : 12;
+    const obstacleCols = containerWidth < 600 ? 12 : 20;
+    const spacingMultiplier = containerWidth < 600 ? .6 : 0.8;
     const obstacleSpacingX = containerWidth / obstacleCols;
     const obstacleSpacingY = (containerHeight / (obstacleRows + 2)) * spacingMultiplier;
 

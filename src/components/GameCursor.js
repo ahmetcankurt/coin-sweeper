@@ -1,9 +1,22 @@
-import React, { useEffect, memo } from "react";
+import React, { useEffect, memo, useState } from "react";
 
 function GameCursor({ cursorRef, gameOver }) {
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
+    // Ekran genişliğine göre mobil olup olmadığını kontrol et
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 800); // 800px altı genişlik mobil olarak kabul ediliyor
+    };
+
+    // Başlangıçta kontrol et
+    checkIsMobile();
+
+    // Pencere yeniden boyutlandırıldığında mobil olup olmadığını tekrar kontrol et
+    window.addEventListener("resize", checkIsMobile);
+
     const handleMouseMove = (event) => {
-      if (cursorRef.current && !gameOver) {
+      if (cursorRef.current && !gameOver && !isMobile) {
         cursorRef.current.style.left = `${event.pageX}px`;
         cursorRef.current.style.top = `${event.pageY}px`;
       }
@@ -13,10 +26,17 @@ function GameCursor({ cursorRef, gameOver }) {
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("resize", checkIsMobile);
     };
-  }, [cursorRef, gameOver]);
+  }, [cursorRef, gameOver, isMobile]);
 
-  return <>{!gameOver && <div className="custom-cursor" ref={cursorRef} />}</>;
+  return (
+    <>
+      {!gameOver && !isMobile && (
+        <div className="custom-cursor" ref={cursorRef} />
+      )}
+    </>
+  );
 }
 
 export default memo(GameCursor);

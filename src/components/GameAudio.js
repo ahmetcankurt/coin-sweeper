@@ -1,10 +1,10 @@
-import { memo, useEffect} from "react";
+import { memo, useEffect } from "react";
 import CoinSound from "../assets/sounds/coin.mp3";
 import GameOverSound from "../assets/sounds/game-over.mp3";
 import GameMusic from "../assets/sounds/game-music.mp3";
 
-function GameAudio({ gameStarted, gameOver, isMuted  , audioRef, gameMusicRef, gameOverAudioRef }) {
-
+function GameAudio({ gameStarted, gameOver, isMuted, audioRef, gameMusicRef, gameOverAudioRef }) {
+  
   const playGameOverSound = () => {
     if (gameOverAudioRef.current) {
       gameOverAudioRef.current.play().catch((error) => {
@@ -65,10 +65,26 @@ function GameAudio({ gameStarted, gameOver, isMuted  , audioRef, gameMusicRef, g
     }
   }, [isMuted]);
 
+  // Document visibility API to handle tab switching
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopGameMusic();
+      } else if (gameStarted && !gameOver) {
+        playGameMusic();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [gameStarted, gameOver]);
+
   return (
     <div>
       <audio ref={audioRef} src={CoinSound} />
-      <audio ref={gameMusicRef}  src={GameMusic} />
+      <audio ref={gameMusicRef} src={GameMusic} />
       <audio ref={gameOverAudioRef} src={GameOverSound} />
     </div>
   );

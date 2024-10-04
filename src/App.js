@@ -9,8 +9,8 @@ import GameObstacles from "./components/GameObstacles";
 import GameCursor from "./components/GameCursor";
 
 function Game() {
-  const boxSizeWidth = window.innerWidth < 800 ? 150 : 200;
-  const boxSizeHeight = window.innerWidth < 800 ? 20 : 30;
+  const boxSizeWidth = window.innerWidth < 800 ? 100 : 200;
+  const boxSizeHeight = window.innerWidth < 800 ? 15 : 30;
 
   const [isMuted, setIsMuted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
