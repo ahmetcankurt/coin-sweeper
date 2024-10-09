@@ -13,7 +13,7 @@
   function Game() {
     console.log("Game component rendered")
     
-    const boxSizeWidth = window.innerWidth < 800 ? 100 : 170;
+    const boxSizeWidth = window.innerWidth < 800 ? 100 : 190;
     const boxSizeHeight = window.innerWidth < 800 ? 15 : 20;
 
     const [isMuted, setIsMuted] = useState(false);
