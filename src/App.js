@@ -11,8 +11,8 @@
   import MoveIcons from "./components/MoveIcons";
 
   function Game() {
-    const boxSizeWidth = window.innerWidth < 800 ? 100 : 200;
-    const boxSizeHeight = window.innerWidth < 800 ? 15 : 30;
+    const boxSizeWidth = window.innerWidth < 800 ? 100 : 170;
+    const boxSizeHeight = window.innerWidth < 800 ? 15 : 20;
 
     const [isMuted, setIsMuted] = useState(false);
     const [gameOver, setGameOver] = useState(false);

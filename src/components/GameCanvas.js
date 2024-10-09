@@ -24,7 +24,7 @@ function GameCanvas({
 
   const createBall = () => {
     const containerWidth = containerRef.current.clientWidth;
-    const ballSize = window.innerWidth < 600 ? 7 : 15;
+    const ballSize = window.innerWidth < 600 ? 7 : 14;
     const margin = containerWidth * 0.03;
     const ballXMin = margin;
     const ballXMax = containerWidth - margin - ballSize * 2;
