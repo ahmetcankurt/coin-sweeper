@@ -13,7 +13,7 @@
   function Game() {
     console.log("Game component rendered")
     
-    const boxSizeWidth = window.innerWidth < 800 ? 100 : 190;
+    const boxSizeWidth = window.innerWidth < 800 ? 100 : 170;
     const boxSizeHeight = window.innerWidth < 800 ? 15 : 20;
 
     const [isMuted, setIsMuted] = useState(false);
@@ -97,7 +97,7 @@
           boxSizeHeight={boxSizeHeight}
           colliderRef={colliderRef}
           sensorRef={sensorRef}
-          boxBottom={window.innerWidth < 800 ? 200 : 45}
+          boxBottom={window.innerWidth < 800 ? 220 : 45}
         />
 
         <GameCanvas
