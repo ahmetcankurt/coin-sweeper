@@ -59,7 +59,7 @@
     // Skor değiştiğinde renk değişimini tetikle
     useEffect(() => {
       if (score > 0) {
-        changeColliderColor("#159b7c", "#fe5c24", 300); // Renk değişimi
+        changeColliderColor("#20a3d8", "#fe5c24", 300); // Renk değişimi
       }
     }, [score]);
 

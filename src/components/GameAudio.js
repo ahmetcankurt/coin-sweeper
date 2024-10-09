@@ -4,7 +4,6 @@ import GameOverSound from "../assets/sounds/game-over.mp3";
 import GameMusic from "../assets/sounds/game-music.mp3";
 
 function GameAudio({ gameStarted, gameOver, isMuted, audioRef, gameMusicRef, gameOverAudioRef }) {
-  console.log("GameAudio component rendered");
   
   const playGameOverSound = () => {
     if (gameOverAudioRef.current) {

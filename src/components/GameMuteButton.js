@@ -7,7 +7,6 @@ function GameMuteButton({
   gameMusicRef,
   gameOverAudioRef,
 }) {
-  console.log("GameMuteButton component rendered");
   const toggleMute = () => {
     setIsMuted((prevMuted) => {
       const newMutedState = !prevMuted;

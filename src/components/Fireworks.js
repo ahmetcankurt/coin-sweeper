@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
 const Fireworks = ({ active }) => {
-  console.log("Fireworks component rendered")
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 

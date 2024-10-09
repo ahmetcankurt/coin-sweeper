@@ -9,11 +9,10 @@
   colliderRef,
   sensorRef
 ) => {
-    console.log("GameObstacles component rendered");
   const containerWidth = containerRef.current.clientWidth;
   const containerHeight = containerRef.current.clientHeight;
   const obstacleSize = containerWidth < 600 ? 2.5 : 5;
-  const obstacleRows = containerWidth < 600 ? 15 : 11;
+  const obstacleRows = containerWidth < 600 ? 17 : 11;
   const obstacleCols = containerWidth < 600 ? 14 : 30;
 
   // Engeller arası mesafe ayarlamaları
@@ -30,27 +29,28 @@
       
       const obstacle = Matter.Bodies.circle(x, y, obstacleSize, {
         isStatic: true,
-        render: { fillStyle: "black" },
+        render: { fillStyle: "#122a41" },
       });
       newObstacles.push(obstacle);
     }
   }
 
-  const frameThickness = 20;
+  const frameThickness = 10;
   const frameObstacles = [
     Matter.Bodies.rectangle(
       frameThickness / 2,
       containerHeight / 2,
       frameThickness,
       containerHeight,
-      { isStatic: true }
+      { isStatic: true , render: { fillStyle: "#fe5c24" }},
+      
     ),
     Matter.Bodies.rectangle(
       containerWidth - frameThickness / 2,
       containerHeight / 2,
       frameThickness,
       containerHeight,
-      { isStatic: true }
+      { isStatic: true , render: { fillStyle: "#fe5c24" }},
     ),
   ];
 

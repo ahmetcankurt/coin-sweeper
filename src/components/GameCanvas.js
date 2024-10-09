@@ -17,7 +17,6 @@ function GameCanvas({
   boxSizeWidth,
   audioRef,
 }) {
-  console.log("GameCanvas component rendered");
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
   const boxBottom = window.innerWidth < 800 ? 200 : 45;
   const requestRef = useRef();
@@ -80,7 +79,7 @@ function GameCanvas({
     if (gameOver) return;
 
     const containerWidth = containerRef.current.clientWidth;
-    const margin = 20;
+    const margin = 10;
     const maxX = containerWidth - boxSizeWidth - margin;
 
     const mouseX =
@@ -123,7 +122,7 @@ function GameCanvas({
         width: canvas.clientWidth,
         height: canvas.clientHeight,
         wireframes: false,
-        background: "#e2e2e2",
+        background: "#f8efed",
       },
     });
 
