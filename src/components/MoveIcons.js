@@ -3,6 +3,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { GoArrowRight } from "react-icons/go";
 
 function MoveIcons() {
+  console.log("MoveIcons component rendered");
   return (
     <div className="move-icons">
       <GoArrowLeft className="go-left" />

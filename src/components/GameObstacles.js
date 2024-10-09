@@ -9,10 +9,11 @@
   colliderRef,
   sensorRef
 ) => {
+    console.log("GameObstacles component rendered");
   const containerWidth = containerRef.current.clientWidth;
   const containerHeight = containerRef.current.clientHeight;
   const obstacleSize = containerWidth < 600 ? 2.5 : 5;
-  const obstacleRows = 11
+  const obstacleRows = containerWidth < 600 ? 15 : 11;
   const obstacleCols = containerWidth < 600 ? 14 : 30;
 
   // Engeller arası mesafe ayarlamaları

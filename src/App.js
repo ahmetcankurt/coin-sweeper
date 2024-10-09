@@ -1,4 +1,4 @@
-  import { useRef, useState, useEffect } from "react";
+  import { useRef, useState, useEffect, useCallback } from "react";
   import Matter from "matter-js";
 
   import GameAudio from "./components/GameAudio";
@@ -11,6 +11,8 @@
   import MoveIcons from "./components/MoveIcons";
 
   function Game() {
+    console.log("Game component rendered")
+    
     const boxSizeWidth = window.innerWidth < 800 ? 100 : 170;
     const boxSizeHeight = window.innerWidth < 800 ? 15 : 20;
 
@@ -62,7 +64,7 @@
     }, [score]);
 
     // Tekrar eden kodları ve bağımlılıkları azaltarak render'ı optimize et
-    const handleAddObstacles = () => {
+    const handleAddObstacles = useCallback(() => {
       GameObstacles(
         containerRef,
         boxSizeWidth,
@@ -71,7 +73,8 @@
         colliderRef,
         sensorRef
       );
-    };
+    }, [containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef]);
+    
 
     return (
       <>

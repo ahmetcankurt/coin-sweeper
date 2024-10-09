@@ -1,6 +1,7 @@
 import React, { useEffect, memo, useState } from "react";
 
 function GameCursor({ cursorRef, gameOver }) {
+  console.log("GameCursor component rendered");
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

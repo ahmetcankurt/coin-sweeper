@@ -11,7 +11,7 @@ function GameStatus({
   setBalls,
   setScore,
   world,
-  GameObstacles,
+  // GameObstacles,
   containerRef,
   boxSizeWidth,
   boxSizeHeight,
@@ -19,12 +19,13 @@ function GameStatus({
   sensorRef,
   boxBottom,
 }) {
+  console.log("GameStatus component rendered");
   const restartGame = () => {
     setGameOver(false);
     setBalls([]); // Topları temizle
     setScore(0); // Skoru sıfırla
     Matter.Composite.clear(world); // Matter.js dünyasını temizle
-    GameObstacles(containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef); // Engelleri tekrar ekle
+    // GameObstacles(containerRef, boxSizeWidth, boxSizeHeight, world, colliderRef, sensorRef); // Engelleri tekrar ekle
   
     // Collider'ın başlangıç konumunu güncelle
     if (colliderRef.current) {

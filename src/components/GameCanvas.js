@@ -17,6 +17,7 @@ function GameCanvas({
   boxSizeWidth,
   audioRef,
 }) {
+  console.log("GameCanvas component rendered");
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
   const boxBottom = window.innerWidth < 800 ? 200 : 45;
   const requestRef = useRef();
