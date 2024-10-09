@@ -47,12 +47,12 @@
     };
 
     useEffect(() => {
-      if (score > 3) {
+      if (score > 3 || gameOver) {
         setFadeClass("fade-out");
       } else {
         setFadeClass("fade-in");
       }
-    }, [score]);
+    }, [score, gameOver]);
 
     // Skor değiştiğinde renk değişimini tetikle
     useEffect(() => {
