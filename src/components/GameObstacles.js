@@ -1,6 +1,7 @@
-import Matter from "matter-js";
+ 
+ import Matter from "matter-js";
 
-const GameObstacles = (
+ const GameObstacles = (
   containerRef,
   boxSizeWidth,
   boxSizeHeight,
@@ -11,19 +12,21 @@ const GameObstacles = (
   const containerWidth = containerRef.current.clientWidth;
   const containerHeight = containerRef.current.clientHeight;
   const obstacleSize = containerWidth < 600 ? 2.5 : 5;
-  const obstacleRows = containerWidth < 600 ? 20 : 12;
-  const obstacleCols = containerWidth < 600 ? 14 : 25;
-  const spacingMultiplier = containerWidth < 600 ? 0.6 : 0.8;
-  const obstacleSpacingX = containerWidth / obstacleCols;
-  const obstacleSpacingY =
-    (containerHeight / (obstacleRows + 2)) * spacingMultiplier;
+  const obstacleRows = 11
+  const obstacleCols = containerWidth < 600 ? 14 : 30;
+
+  // Engeller arası mesafe ayarlamaları
+  const obstacleSpacing = containerWidth / (obstacleCols); // Satırdaki her iki yuvarlak arası
+  const rowHeight = obstacleSpacing * Math.sqrt(3) / 2; // Altıgenin yüksekliği
 
   const newObstacles = [];
   for (let row = 0; row < obstacleRows; row++) {
+    const y = row * rowHeight + 100; // Satır arası mesafe
+
     for (let col = 0; col < obstacleCols; col++) {
-      const xOffset = row % 2 === 0 ? obstacleSpacingX / 2 : 0;
-      const x = col * obstacleSpacingX + xOffset;
-      const y = row * obstacleSpacingY + 100;
+      // x konumunu ayarlıyoruz
+      const x = col * obstacleSpacing + (row % 2 === 0 ? obstacleSpacing / 2 : 0); // Çift satırlarda kaydırma
+      
       const obstacle = Matter.Bodies.circle(x, y, obstacleSize, {
         isStatic: true,
         render: { fillStyle: "black" },
@@ -50,7 +53,7 @@ const GameObstacles = (
     ),
   ];
 
-  // Collider dikdörtgeni güncellendi
+  // Collider dikdörtgeni
   const createCollider = () => {
     const collider = Matter.Bodies.rectangle(
       containerWidth / 2, // X konumu
