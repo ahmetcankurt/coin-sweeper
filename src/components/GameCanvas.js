@@ -18,7 +18,7 @@ function GameCanvas({
   audioRef,
 }) {
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
-  const boxBottom = window.innerWidth < 800 ? 220 : 45;
+  const boxBottom = window.innerWidth < 800 ? 240 : 45;
   const requestRef = useRef();
   const runner = useRef(Matter.Runner.create({ delta: 1000 / 60 }));
 

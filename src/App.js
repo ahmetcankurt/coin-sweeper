@@ -97,7 +97,7 @@
           boxSizeHeight={boxSizeHeight}
           colliderRef={colliderRef}
           sensorRef={sensorRef}
-          boxBottom={window.innerWidth < 800 ? 220 : 45}
+          boxBottom={window.innerWidth < 800 ? 240 : 45}
         />
 
         <GameCanvas
