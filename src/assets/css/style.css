@@ -185,3 +185,78 @@ h2 {
 
 }
 
+@keyframes moveLeft {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-20px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes moveRight {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(20px);
+    opacity: 0.5;
+  }
+}
+
+.move-icons {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  gap: 30px;
+  font-size: xx-large;
+  opacity: 0.5;
+}
+
+
+.move-icons .go-left {
+  animation: moveLeft 1s infinite ease-in-out;
+}
+
+.move-icons .go-right {
+  animation: moveRight 1s infinite ease-in-out;
+}
+
+.move-span {
+  font-size:  18px;
+  opacity: 0.5;
+  animation: zoom 1s infinite ease-in-out; /* Zoom animasyonu */
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1); /* Başlangıç boyutu */
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1); /* Zoom in */
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1); /* Zoom out */
+    opacity: 0.5;
+  }
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}

@@ -26,7 +26,7 @@ const GameObstacles = (
       const y = row * obstacleSpacingY + 100;
       const obstacle = Matter.Bodies.circle(x, y, obstacleSize, {
         isStatic: true,
-        render: { fillStyle: "#0d3d63" },
+        render: { fillStyle: "black" },
       });
       newObstacles.push(obstacle);
     }

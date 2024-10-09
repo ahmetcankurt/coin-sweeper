@@ -18,9 +18,9 @@ function GameCanvas({
   audioRef,
 }) {
   const [boxX, setBoxX] = useState(window.innerWidth / 2 - 50);
-  const boxBottom = window.innerWidth < 800 ? 200 : 45; // Collider'ın mobilde 100px yukarıda olmasını sağlar
+  const boxBottom = window.innerWidth < 800 ? 200 : 45;
   const requestRef = useRef();
-  const runner = useRef(Matter.Runner.create({ delta: 1000 / 60 })); // 60 FPS
+  const runner = useRef(Matter.Runner.create({ delta: 1000 / 60 }));
 
   const createBall = () => {
     const containerWidth = containerRef.current.clientWidth;
@@ -75,11 +75,24 @@ function GameCanvas({
     setBoxX(Math.max(margin, Math.min(maxX, touchX)));
   };
 
+  const handleMouseMove = (e) => {
+    if (gameOver) return;
+
+    const containerWidth = containerRef.current.clientWidth;
+    const margin = 20;
+    const maxX = containerWidth - boxSizeWidth - margin;
+
+    const mouseX =
+      e.clientX - containerRef.current.getBoundingClientRect().left - boxSizeWidth / 2;
+
+    setBoxX(Math.max(margin, Math.min(maxX, mouseX)));
+  };
+
   const updatePosition = () => {
     if (colliderRef.current) {
       Matter.Body.setPosition(colliderRef.current, {
         x: boxX + boxSizeWidth / 2,
-        y: containerRef.current.clientHeight - boxBottom, // Collider'ın yerini ayarlar
+        y: containerRef.current.clientHeight - boxBottom,
       });
     }
   };
@@ -153,9 +166,12 @@ function GameCanvas({
   }, [gameOver, balls]);
 
   useEffect(() => {
-    window.addEventListener("touchmove", handleTouchMove); // Mobilde dokunarak sürüklemek için ekledik
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("mousemove", handleMouseMove); // Mouse hareketi için dinleyici ekledik
+
     return () => {
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("mousemove", handleMouseMove); // Dinleyiciyi temizledik
     };
   }, [gameOver]);
 
